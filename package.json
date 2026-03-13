@@ -1,0 +1,44 @@
+{
+  "name": "@torchv/kb-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for TorchV AIS Knowledge Base via the remote execute service.",
+  "type": "module",
+  "bin": {
+    "kb-mcp": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/cli.ts",
+    "dev:http": "tsx src/cli.ts --transport streamable-http --host 127.0.0.1 --port 3000 --path /mcp",
+    "start": "node dist/cli.js",
+    "start:http": "node dist/cli.js --transport streamable-http --host 127.0.0.1 --port 3000 --path /mcp",
+    "inspect": "npx -y @modelcontextprotocol/inspector --transport stdio -- node dist/cli.js",
+    "inspect:cli": "npx -y @modelcontextprotocol/inspector --cli --transport stdio -- node dist/cli.js --method tools/list",
+    "inspect:cli:write": "KB_MODE=write npx -y @modelcontextprotocol/inspector --cli --transport stdio -- node dist/cli.js --method tools/list",
+    "inspect:cli:admin": "KB_MODE=admin npx -y @modelcontextprotocol/inspector --cli --transport stdio -- node dist/cli.js --method tools/list",
+    "inspect:http": "npx -y @modelcontextprotocol/inspector http://127.0.0.1:3000/mcp"
+  },
+  "keywords": [
+    "mcp",
+    "torchv",
+    "ais",
+    "knowledge-base"
+  ],
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.3"
+  }
+}
