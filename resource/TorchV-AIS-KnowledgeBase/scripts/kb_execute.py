@@ -41,6 +41,8 @@ def build_auth_headers(token: str) -> dict[str, str]:
     normalized = token.strip()
     if normalized.startswith("tk"):
         return {"Authorization": f"Bearer {normalized}"}
+    if normalized.startswith("Bearer"):
+        return {"Authorization": f"{normalized}"}
     return {"token": normalized}
 
 
