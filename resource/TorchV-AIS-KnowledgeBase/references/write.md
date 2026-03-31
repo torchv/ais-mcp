@@ -54,6 +54,36 @@ kb write --name team-workspace/reports/q1-summary.md --content '<h1>Q1 Summary</
 ```text
 kb mkdir --repo-code TEAM_DOCS --path reports/2026/ --parents
 ```
+### kb cp
+
+用于复制知识库对象到目标位置。只有用户明确要求“复制/拷贝”时才使用。
+
+- 常用写法：
+    - `kb cp --from <repo/src.md> --to <repo/dst.md>`
+    - `kb cp --doc-code <DOC_CODE> --to <repo/dst.md>`
+    - `kb cp --from <repo/src_dir/> --to <repo/dst_dir/> --recursive true`
+- 常用参数：
+    - `--from <repo/path>`：按知识库路径指定复制源
+    - `--doc-code <DOC_CODE>`：按元素编码指定复制源
+    - `--to <repo/path>`：目标路径，必填
+    - `--recursive true|false`：复制目录时是否连同子内容一起复制；默认 false
+- 行为语义：
+    - 复制不会删除或移动源对象。
+    - 目标路径中的父目录不存在时，会自动补建目录。
+    - 复制普通对象成功后，目标对象通常会生成新的 code。
+    - 返回结果里的 type 目前是 element 或 directory。
+- 限制与冲突策略：
+    - 必须二选一提供 `--from` 或 `--doc-code`，不能同时传，也不能都不传。
+    - 目录复制建议显式传 --recursive true。
+
+示例：
+
+```text
+kb cp --doc-code DOC_12345 --to team-workspace/reports/q1-summary-copy.md
+
+kb cp --from team-workspace/project-a/ --to archive/project-a/ --recursive true
+
+```
 
 ### `kb mv`
 

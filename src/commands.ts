@@ -45,6 +45,13 @@ export interface MoveInput {
   to: string;
 }
 
+export interface CopyInput {
+  from?: string;
+  docCode?: string;
+  to: string;
+  recursive?: boolean;
+}
+
 export interface DeleteInput {
   path?: string;
   docCode?: string;
@@ -192,6 +199,23 @@ export function buildMoveCommand(input: MoveInput): string {
   pushFlag(parts, "--from", input.from);
   pushFlag(parts, "--doc-code", input.docCode);
   pushFlag(parts, "--to", input.to);
+  return parts.join(" ");
+}
+
+export function buildCopyCommand(input: CopyInput): string {
+  const hasFrom = Boolean(input.from);
+  const hasDocCode = Boolean(input.docCode);
+  if (hasFrom === hasDocCode) {
+    throw new Error("kb_copy_document requires either from or docCode, but not both.");
+  }
+
+  const parts = ["kb", "cp"];
+  pushFlag(parts, "--from", input.from);
+  pushFlag(parts, "--doc-code", input.docCode);
+  pushFlag(parts, "--to", input.to);
+  if (input.recursive !== undefined) {
+    parts.push("--recursive", input.recursive ? "true" : "false");
+  }
   return parts.join(" ");
 }
 

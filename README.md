@@ -135,6 +135,7 @@ Streamable HTTP transport:
 - `kb_write_document`
 - `kb_patch_document`
 - `kb_create_directory`
+- `kb_copy_document`
 - `kb_publish_document`
 - `kb_move_document`
 - `kb_delete_document`
@@ -145,7 +146,7 @@ Destructive tools are only available when `KB_MODE=admin`.
 Mode summary:
 
 - `readonly`: `kb_list_repos`, `kb_list_path`, `kb_tree`, `kb_search`, `kb_read_document`, `kb_render_link`
-- `write`: readonly tools plus `kb_write_document`, `kb_patch_document`, `kb_create_directory`, `kb_publish_document`
+- `write`: readonly tools plus `kb_write_document`, `kb_patch_document`, `kb_create_directory`, `kb_copy_document`, `kb_publish_document`
 - `admin`: write tools plus `kb_move_document`, `kb_delete_document`
 
 `kb_patch_document` takes the full patch body and sends it as:

@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { KbConfig } from "./config.js";
 import { KbClient } from "./kb-client.js";
 import {
+  buildCopyCommand,
   buildCreateDirectoryCommand,
   buildDeleteCommand,
   buildListPathCommand,
@@ -138,6 +139,17 @@ export function createKbServer(config: KbConfig): McpServer {
         existOk: z.boolean().optional(),
       },
       async (input) => runTool(buildCreateDirectoryCommand(input)),
+    );
+
+    server.tool(
+      "kb_copy_document",
+      {
+        from: z.string().min(1).optional(),
+        docCode: z.string().min(1).optional(),
+        to: z.string().min(1),
+        recursive: z.boolean().optional(),
+      },
+      async (input) => runTool(buildCopyCommand(input)),
     );
 
     server.tool(
