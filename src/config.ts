@@ -11,6 +11,7 @@ export interface KbConfig {
 
 const VALID_MODES = new Set<KbMode>(["readonly", "write", "admin"]);
 const DEFAULT_TIMEOUT_MS = 30_000;
+const EXECUTE_PATH = "/kb/atomix/execute";
 
 function parseMode(rawMode: string | undefined): KbMode {
   if (!rawMode) {
@@ -74,9 +75,35 @@ function missingTokenGuidance(): string {
   ].join(" ");
 }
 
+function normalizeExecuteUrl(rawUrl: string): string {
+  let parsed: URL;
+  try {
+    parsed = new URL(rawUrl);
+  } catch (error) {
+    throw new Error(
+      `Invalid KB_EXECUTE_URL ${JSON.stringify(rawUrl)}. Expected a full URL such as "https://bot.torchv.com". ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
+  }
+
+  if (parsed.pathname === EXECUTE_PATH) {
+    return parsed.toString();
+  }
+
+  if (parsed.pathname === "/" || parsed.pathname === "") {
+    parsed.pathname = EXECUTE_PATH;
+    parsed.search = "";
+    parsed.hash = "";
+    return parsed.toString();
+  }
+
+  return parsed.toString();
+}
+
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): KbConfig {
-  const executeUrl = env.KB_EXECUTE_URL?.trim();
-  if (!executeUrl) {
+  const rawExecuteUrl = env.KB_EXECUTE_URL?.trim();
+  if (!rawExecuteUrl) {
     throw new Error("Missing KB_EXECUTE_URL. Set it in the MCP server environment.");
   }
 
@@ -86,7 +113,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): KbConfig {
   }
 
   return {
-    executeUrl,
+    executeUrl: normalizeExecuteUrl(rawExecuteUrl),
     token,
     timeoutMs: parseTimeoutMs(env.KB_TIMEOUT_SECONDS),
     extraHeaders: parseExtraHeaders(env.KB_EXTRA_HEADERS_JSON),

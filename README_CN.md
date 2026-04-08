@@ -44,21 +44,15 @@ export KB_TOKEN="your-token"
 
 ### 🌐 获取 `KB_EXECUTE_URL`
 
-`KB_EXECUTE_URL` 是 AIS 知识库执行接口地址。
-
 📌 获取方式：
 
-1. 打开你正在使用的 AIS 页面（如：`https://ais.xxx.com`）
-2. 在域名后拼接固定路径：
-
-```
-/kb/atomix/execute
-```
+1. 打开你正在使用的 AIS 页面
+2. 从浏览器地址栏复制网址
 
 👉 示例：
 
 ```text
-https://aisdevserver.dev.torchv.com/kb/atomix/execute
+https://bot.torchv.com
 ```
 
 ---
@@ -150,7 +144,7 @@ npm run start:http
       "command": "npx",
       "args": ["-y", "@torchv/ais-mcp"],
       "env": {
-        "KB_EXECUTE_URL": "https://your-ais-domain/kb/atomix/execute",
+        "KB_EXECUTE_URL": "https://https://bot.torchv.com",
         "KB_TOKEN": "your-token",
         "KB_MODE": "readonly"
       }

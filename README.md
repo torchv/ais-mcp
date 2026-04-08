@@ -8,6 +8,7 @@
 
 A production-ready MCP server that enables **read / write / edit / file transfer** operations directly on the AIS enterprise knowledge base.
 
+![img](resource/img.png)
 ---
 
 ## ✨ Features
@@ -41,21 +42,15 @@ export KB_TOKEN="your-token"
 
 ### 🌐 How to get `KB_EXECUTE_URL`
 
-`KB_EXECUTE_URL` is the AIS execution endpoint.
-
 📌 Steps:
 
-1. Open your AIS instance (e.g. `https://ais.xxx.com`)
-2. Append the fixed path:
-
-```
-/kb/atomix/execute
-```
+1. Open your AIS instance
+2. Copy the site origin from the browser address bar
 
 👉 Example:
 
 ```text
-https://aisdevserver.dev.torchv.com/kb/atomix/execute
+https://bot.torchv.com
 ```
 
 ---
@@ -153,7 +148,7 @@ npm run start:http
       "command": "npx",
       "args": ["-y", "@torchv/ais-mcp"],
       "env": {
-        "KB_EXECUTE_URL": "https://your-ais-domain/kb/atomix/execute",
+        "KB_EXECUTE_URL": "https://your-ais-domain",
         "KB_TOKEN": "your-token",
         "KB_MODE": "readonly"
       }

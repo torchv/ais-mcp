@@ -31,8 +31,9 @@ function printHelp(): void {
     "  --path /mcp                         仅 HTTP 模式",
     "",
     "地址与令牌获取:",
-    "  KB_EXECUTE_URL: 通常是你的 AIS 域名后拼接 /kb/atomix/execute",
-    "  例如 https://ais.example.com/kb/atomix/execute",
+    "  KB_EXECUTE_URL: 直接填写 AIS 站点地址即可",
+    "  例如 https://bot.torchv.com",
+    "  程序会自动补全 /kb/atomix/execute",
     "  KB_TOKEN: 推荐在 AIS -> 管理中心 -> 开放密钥 -> 创建密钥",
     "  临时方案: 从已登录 AIS 页面请求头中复制 token 或 Authorization",
   ].join("\n");
