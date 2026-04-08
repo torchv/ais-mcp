@@ -174,6 +174,7 @@ These file tools are intentionally different from the `kb ...` command family:
 - `kb_download_file`
   - Agent input: `code`, `localPath`, optional `extractIs`, optional `overwrite`
   - Program behavior: Node downloads bytes from `/openapi/partner/sage/file/download?code=...` and writes them to the MCP server machine
+  - Error handling: if the backend returns a JSON payload instead of file bytes, the tool fails instead of writing the JSON body as a fake file
   - Actual remote params: `code`, optional `extractIs`
 - `kb_get_download_link`
   - Agent input: `code`, optional `extractIs`

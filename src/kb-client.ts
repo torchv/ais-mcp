@@ -69,16 +69,22 @@ export class KbClient {
       throw await buildHttpError(response, "KB download");
     }
 
+    const rawBody = new Uint8Array(await response.arrayBuffer());
+    const apiEnvelope = tryParseApiEnvelope(rawBody);
+    if (apiEnvelope !== undefined) {
+      const renderedBody = JSON.stringify(apiEnvelope, null, 2);
+      throw new Error(`KB download returned a JSON payload instead of file bytes: ${renderedBody}`);
+    }
+
     const contentType = response.headers.get("content-type") ?? "application/octet-stream";
     const suggestedName = getSuggestedFileName(response.headers.get("content-disposition")) ?? input.code;
     const outputPath = await resolveDownloadPath(input.localPath, suggestedName, input.overwrite ?? false);
-    const content = new Uint8Array(await response.arrayBuffer());
-    await writeFile(outputPath, content, { flag: input.overwrite ? "w" : "wx" });
+    await writeFile(outputPath, rawBody, { flag: input.overwrite ? "w" : "wx" });
 
     return {
       savedPath: outputPath,
       fileName: basename(outputPath),
-      size: content.byteLength,
+      size: rawBody.byteLength,
       contentType,
     };
   }
@@ -94,7 +100,7 @@ export class KbClient {
     return fetch(url, {
       ...init,
       headers: {
-        token: this.config.token,
+        ...buildAuthHeaders(this.config.token),
         ...this.config.extraHeaders,
         ...(init.headers ?? {}),
       },
@@ -131,6 +137,28 @@ function tryParseJson(text: string): unknown {
   } catch {
     return text;
   }
+}
+
+function buildAuthHeaders(token: string): Record<string, string> {
+  const normalized = token.trim();
+  if (normalized.startsWith("tk")) {
+    return { Authorization: `Bearer ${normalized}` };
+  }
+  if (normalized.startsWith("Bearer")) {
+    return { Authorization: normalized };
+  }
+  return { token: normalized };
+}
+
+function tryParseApiEnvelope(body: Uint8Array): Record<string, unknown> | undefined {
+  const text = new TextDecoder().decode(body);
+  try {
+    const parsed = JSON.parse(text);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return parsed as Record<string, unknown>;
+    }
+  } catch {}
+  return undefined;
 }
 
 async function readJsonOrText(response: Response, label: string): Promise<unknown> {
