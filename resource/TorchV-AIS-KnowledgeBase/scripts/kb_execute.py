@@ -39,6 +39,13 @@ def print_response(body: bytes) -> None:
     print(json.dumps(parsed, ensure_ascii=False, indent=2))
 
 
+def parse_json_body(body: bytes) -> object | None:
+    try:
+        return json.loads(body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return None
+
+
 def read_command_file(path: str) -> str:
     with open(path, "r", encoding="utf-8") as handle:
         return handle.read()
@@ -142,6 +149,10 @@ def download_file(
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             body = response.read()
+            parsed = parse_json_body(body)
+            if isinstance(parsed, dict):
+                print(json.dumps(parsed, ensure_ascii=False, indent=2), file=sys.stderr)
+                return 1
             target_path = resolve_download_path(local_path, response.headers.get("Content-Disposition"), code, overwrite)
             os.makedirs(os.path.dirname(target_path) or ".", exist_ok=True)
             mode = "wb" if overwrite else "xb"

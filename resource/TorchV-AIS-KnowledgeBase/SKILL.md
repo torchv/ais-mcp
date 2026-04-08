@@ -79,6 +79,8 @@ token: <KB_TOKEN>
 ./scripts/kb_execute.py --download-link-code 2031630406710923264 --extract-is false
 ```
 
+如果 `--download-code` 返回的是 JSON 错误而不是文件内容，脚本会直接失败退出。此时优先改用 `--download-link-code` 生成票据，再用 `wget` 或 `curl` 验证下载链路。
+
 ## 执行前检查
 
 - 先确认 `KB_EXECUTE_URL` 和 `KB_TOKEN` 已提供，或本次调用显式传入 `--url` 和 `--token`。
