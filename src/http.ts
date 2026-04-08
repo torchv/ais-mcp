@@ -144,7 +144,7 @@ export async function startStreamableHttpServer(config: KbConfig, options: HttpO
     });
   });
 
-  console.error(`kb-mcp streamable-http listening at http://${options.host}:${options.port}${routePath}`);
+  console.error(`ais-mcp streamable-http listening at http://${options.host}:${options.port}${routePath}`);
 
   const shutdown = async () => {
     const closers = Array.from(sessions.values(), async ({ transport, server }) => {

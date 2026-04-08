@@ -1,79 +1,63 @@
-# `@torchv/kb-mcp`
+# `@torchv/ais-mcp`
 
-MCP server for TorchV AIS Knowledge Base.
+TorchV AIS 知识库的 MCP Server。
 
-## Install / Run
+提供 读/写/修改/文件传输 4类工具用于直接操作AIS
+
+![img.png](resource/img.png)
+
+## 安装与运行
 
 ```bash
-npx -y @torchv/kb-mcp
+npx -y @torchv/ais-mcp
 ```
 
-## Startup Modes
+## 必填配置
 
-STDIO mode for local MCP clients:
-
-```bash
-npm run build
-node dist/cli.js
-```
-
-Equivalent npm scripts:
+启动前至少需要两个环境变量：
 
 ```bash
-npm run dev
-npm run start
-```
-
-Streamable HTTP mode for network clients:
-
-```bash
-npm run build
-node dist/cli.js --transport streamable-http --host 127.0.0.1 --port 3000 --path /mcp
-```
-
-Equivalent npm scripts:
-
-```bash
-npm run dev:http
-npm run start:http
-```
-
-For local inspection during development:
-
-```bash
-npm run build
-npm run inspect
-```
-
-The bundled inspector script forces `stdio` transport so it connects to the local MCP process instead of a previously cached HTTP endpoint. For HTTP mode, start the server separately and then open:
-
-```bash
-npm run inspect:http
-```
-
-To verify the expanded tool surface locally:
-
-```bash
-KB_EXECUTE_URL=http://127.0.0.1:9 KB_TOKEN=test npm run inspect:cli
-KB_EXECUTE_URL=http://127.0.0.1:9 KB_TOKEN=test npm run inspect:cli:write
-KB_EXECUTE_URL=http://127.0.0.1:9 KB_TOKEN=test npm run inspect:cli:admin
-```
-
-## Required Environment Variables
-
-```bash
-export KB_EXECUTE_URL="https://aisdevserver.dev.torchv.com/kb/atomix/execute"
+export KB_EXECUTE_URL="https://bot.torchv.com"
 export KB_TOKEN="your-token"
 ```
 
-If you do not have a token yet:
+### 如何获取 `KB_EXECUTE_URL`
+
+`KB_EXECUTE_URL` 是 AIS 知识库执行接口地址。
+
+常见获取方式：
+
+1. 先确认你平时访问 AIS 的域名，例如 `https://ais.xxx.com`
+2. 在这个域名后拼上固定路径 `/kb/atomix/execute`
+3. 得到的完整地址就是：
 
 ```text
-Recommended: AIS -> 管理中心 -> 开放密钥 -> 创建密钥
-Temporary fallback: copy the token header from an authenticated AIS web request
+https://ais.xxx.com/kb/atomix/execute
 ```
 
-Optional:
+示例：
+
+```text
+https://aisdevserver.dev.torchv.com/kb/atomix/execute
+```
+
+如果你不确定域名，直接在浏览器打开你正在使用的 AIS 页面，复制地址栏里的站点域名即可。
+
+### 如何获取 `KB_TOKEN`
+
+推荐方式：
+
+```text
+AIS -> 管理中心 -> 开放密钥 -> 创建密钥
+```
+
+临时方式：
+
+```text
+在已登录 AIS 的浏览器里打开开发者工具，找到知识库相关请求，复制请求头里的 token 或 Authorization 值
+```
+
+## 可选配置
 
 ```bash
 export KB_MODE="readonly"   # readonly | write | admin
@@ -82,7 +66,47 @@ export KB_DEFAULT_REPO_CODE="TEAM_DOCS"
 export KB_EXTRA_HEADERS_JSON='{"x-foo":"bar"}'
 ```
 
-HTTP mode also accepts CLI flags:
+权限说明：
+
+- `readonly`：只读
+- `write`：允许写入、补丁、上传、发布
+- `admin`：在 `write` 基础上额外允许移动和删除
+
+## 启动方式
+
+### STDIO 模式
+
+适合本地 MCP 客户端直接拉起：
+
+```bash
+npm run build
+node dist/cli.js
+```
+
+也可以直接用脚本：
+
+```bash
+npm run dev
+npm run start
+```
+
+### Streamable HTTP 模式
+
+适合通过网络访问：
+
+```bash
+npm run build
+node dist/cli.js --transport streamable-http --host 127.0.0.1 --port 3000 --path /mcp
+```
+
+也可以直接用脚本：
+
+```bash
+npm run dev:http
+npm run start:http
+```
+
+HTTP 模式支持以下参数：
 
 ```bash
 --transport streamable-http
@@ -91,18 +115,18 @@ HTTP mode also accepts CLI flags:
 --path /mcp
 ```
 
-## Claude / Codex MCP Config
+## Claude / Codex 配置示例
 
-STDIO transport:
+### STDIO
 
 ```json
 {
   "mcpServers": {
-    "kb": {
+    "ais": {
       "command": "npx",
-      "args": ["-y", "@torchv/kb-mcp"],
+      "args": ["-y", "@torchv/ais-mcp"],
       "env": {
-        "KB_EXECUTE_URL": "https://aisdevserver.dev.torchv.com/kb/atomix/execute",
+        "KB_EXECUTE_URL": "https://your-ais-domain/kb/atomix/execute",
         "KB_TOKEN": "your-token",
         "KB_MODE": "readonly"
       }
@@ -111,12 +135,12 @@ STDIO transport:
 }
 ```
 
-Streamable HTTP transport:
+### Streamable HTTP
 
 ```json
 {
   "mcpServers": {
-    "kb-http": {
+    "ais-http": {
       "type": "streamable-http",
       "url": "http://127.0.0.1:3000/mcp"
     }
@@ -124,7 +148,7 @@ Streamable HTTP transport:
 }
 ```
 
-## Tool Surface
+## 工具列表
 
 - `kb_list_repos`
 - `kb_list_path`
@@ -143,46 +167,13 @@ Streamable HTTP transport:
 - `kb_move_document`
 - `kb_delete_document`
 
-Write tools are only available when `KB_MODE=write` or `KB_MODE=admin`.
-Destructive tools are only available when `KB_MODE=admin`.
+模式对应关系：
 
-Mode summary:
+- `readonly`：`kb_list_repos`、`kb_list_path`、`kb_tree`、`kb_search`、`kb_read_document`、`kb_render_link`、`kb_download_file`、`kb_get_download_link`
+- `write`：在 `readonly` 基础上增加 `kb_write_document`、`kb_patch_document`、`kb_create_directory`、`kb_copy_document`、`kb_publish_document`、`kb_upload_file`
+- `admin`：在 `write` 基础上增加 `kb_move_document`、`kb_delete_document`
 
-- `readonly`: `kb_list_repos`, `kb_list_path`, `kb_tree`, `kb_search`, `kb_read_document`, `kb_render_link`, `kb_download_file`, `kb_get_download_link`
-- `write`: readonly tools plus `kb_write_document`, `kb_patch_document`, `kb_create_directory`, `kb_copy_document`, `kb_publish_document`, `kb_upload_file`
-- `admin`: write tools plus `kb_move_document`, `kb_delete_document`
-
-`kb_patch_document` takes the full patch body and sends it as:
-
-```text
-kb edit --patch
-*** Begin Patch
-...
-*** End Patch
-```
-
-The target file is defined inside the patch header, matching the skill's `update.md`.
-
-## File Transfer Tools
-
-These file tools are intentionally different from the `kb ...` command family:
-
-- `kb_upload_file`
-  - Agent input: `localPath`, `pathName`, optional `fileName`
-  - Program behavior: Node reads the local file bytes from the MCP server machine, then uploads them to `/openapi/partner/sage/file/upload` as `multipart/form-data`
-  - Actual remote params: `file`, `fileName`, `pathName`
-- `kb_download_file`
-  - Agent input: `code`, `localPath`, optional `extractIs`, optional `overwrite`
-  - Program behavior: Node downloads bytes from `/openapi/partner/sage/file/download?code=...` and writes them to the MCP server machine
-  - Error handling: if the backend returns a JSON payload instead of file bytes, the tool fails instead of writing the JSON body as a fake file
-  - Actual remote params: `code`, optional `extractIs`
-- `kb_get_download_link`
-  - Agent input: `code`, optional `extractIs`
-  - Program behavior: Node calls `/openapi/partner/sage/file/downloadLink?code=...` and returns the JSON payload
-  - Actual remote params: `code`, optional `extractIs`
-
-Design rationale:
-
-- Agents cannot reliably read binary files such as PDF/PPT and then re-upload them.
-- Local file paths keep the tool surface simple and work well for local MCP deployments.
-- Binary transfer is handled by Node, while the agent only decides source and destination paths.
+## AIS企业知识库试用
+TorchV 以 TorchV AIS 为核⼼主产品。AIS 的定位不是传统知识库，也不是简单的知识协作系统，⽽是企业级 AI 知识引擎系统。它负责将企业分散、异构的原始资料持续转化为可检索、可治理、可优化、可调⽤的⾼质量知识资产。
+CEO微信：
+![img.png](img.png)

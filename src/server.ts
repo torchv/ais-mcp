@@ -25,7 +25,7 @@ function toText(value: unknown): string {
 export function createKbServer(config: KbConfig): McpServer {
   const client = new KbClient(config);
   const server = new McpServer({
-    name: "torchv-kb",
+    name: "ais-mcp",
     version: "0.1.0",
   });
 
