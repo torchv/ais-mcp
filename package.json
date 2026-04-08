@@ -15,6 +15,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build",
     "dev": "tsx src/cli.ts",
     "dev:http": "tsx src/cli.ts --transport streamable-http --host 127.0.0.1 --port 3000 --path /mcp",
     "start": "node dist/cli.js",
@@ -31,6 +32,9 @@
     "ais",
     "knowledge-base"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "UNLICENSED",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
