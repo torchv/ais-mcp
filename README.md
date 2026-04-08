@@ -132,11 +132,14 @@ Streamable HTTP transport:
 - `kb_search`
 - `kb_read_document`
 - `kb_render_link`
+- `kb_download_file`
+- `kb_get_download_link`
 - `kb_write_document`
 - `kb_patch_document`
 - `kb_create_directory`
 - `kb_copy_document`
 - `kb_publish_document`
+- `kb_upload_file`
 - `kb_move_document`
 - `kb_delete_document`
 
@@ -145,8 +148,8 @@ Destructive tools are only available when `KB_MODE=admin`.
 
 Mode summary:
 
-- `readonly`: `kb_list_repos`, `kb_list_path`, `kb_tree`, `kb_search`, `kb_read_document`, `kb_render_link`
-- `write`: readonly tools plus `kb_write_document`, `kb_patch_document`, `kb_create_directory`, `kb_copy_document`, `kb_publish_document`
+- `readonly`: `kb_list_repos`, `kb_list_path`, `kb_tree`, `kb_search`, `kb_read_document`, `kb_render_link`, `kb_download_file`, `kb_get_download_link`
+- `write`: readonly tools plus `kb_write_document`, `kb_patch_document`, `kb_create_directory`, `kb_copy_document`, `kb_publish_document`, `kb_upload_file`
 - `admin`: write tools plus `kb_move_document`, `kb_delete_document`
 
 `kb_patch_document` takes the full patch body and sends it as:
@@ -159,3 +162,26 @@ kb edit --patch
 ```
 
 The target file is defined inside the patch header, matching the skill's `update.md`.
+
+## File Transfer Tools
+
+These file tools are intentionally different from the `kb ...` command family:
+
+- `kb_upload_file`
+  - Agent input: `localPath`, `pathName`, optional `fileName`
+  - Program behavior: Node reads the local file bytes from the MCP server machine, then uploads them to `/openapi/partner/sage/file/upload` as `multipart/form-data`
+  - Actual remote params: `file`, `fileName`, `pathName`
+- `kb_download_file`
+  - Agent input: `code`, `localPath`, optional `extractIs`, optional `overwrite`
+  - Program behavior: Node downloads bytes from `/openapi/partner/sage/file/download?code=...` and writes them to the MCP server machine
+  - Actual remote params: `code`, optional `extractIs`
+- `kb_get_download_link`
+  - Agent input: `code`, optional `extractIs`
+  - Program behavior: Node calls `/openapi/partner/sage/file/downloadLink?code=...` and returns the JSON payload
+  - Actual remote params: `code`, optional `extractIs`
+
+Design rationale:
+
+- Agents cannot reliably read binary files such as PDF/PPT and then re-upload them.
+- Local file paths keep the tool surface simple and work well for local MCP deployments.
+- Binary transfer is handled by Node, while the agent only decides source and destination paths.

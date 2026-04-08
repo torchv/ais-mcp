@@ -108,6 +108,50 @@ export function createKbServer(config: KbConfig): McpServer {
     async ({ codes }) => runTool(buildRenderLinkCommand(codes)),
   );
 
+  server.tool(
+    "kb_download_file",
+    {
+      code: z.string().min(1),
+      localPath: z.string().min(1),
+      extractIs: z.boolean().optional(),
+      overwrite: z.boolean().optional(),
+    },
+    async ({ code, localPath, extractIs, overwrite }) => {
+      try {
+        const result = await client.downloadFile({ code, localPath, extractIs, overwrite });
+        return {
+          content: [{ type: "text" as const, text: toText(result) }],
+        };
+      } catch (error) {
+        return {
+          isError: true,
+          content: [{ type: "text" as const, text: error instanceof Error ? error.message : String(error) }],
+        };
+      }
+    },
+  );
+
+  server.tool(
+    "kb_get_download_link",
+    {
+      code: z.string().min(1),
+      extractIs: z.boolean().optional(),
+    },
+    async ({ code, extractIs }) => {
+      try {
+        const result = await client.getDownloadLink({ code, extractIs });
+        return {
+          content: [{ type: "text" as const, text: toText(result) }],
+        };
+      } catch (error) {
+        return {
+          isError: true,
+          content: [{ type: "text" as const, text: error instanceof Error ? error.message : String(error) }],
+        };
+      }
+    },
+  );
+
   if (config.mode === "write" || config.mode === "admin") {
     server.tool(
       "kb_write_document",
@@ -159,6 +203,28 @@ export function createKbServer(config: KbConfig): McpServer {
         name: z.string().min(1).optional(),
       },
       async (input) => runTool(buildPublishCommand(input)),
+    );
+
+    server.tool(
+      "kb_upload_file",
+      {
+        localPath: z.string().min(1),
+        pathName: z.string().min(1),
+        fileName: z.string().min(1).optional(),
+      },
+      async ({ localPath, pathName, fileName }) => {
+        try {
+          const result = await client.uploadFile({ localPath, pathName, fileName });
+          return {
+            content: [{ type: "text" as const, text: toText(result) }],
+          };
+        } catch (error) {
+          return {
+            isError: true,
+            content: [{ type: "text" as const, text: error instanceof Error ? error.message : String(error) }],
+          };
+        }
+      },
     );
   }
 
