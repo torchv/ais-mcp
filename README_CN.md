@@ -1,4 +1,4 @@
-# `@torchv/ais-mcp`
+# `@torchv-team/ais-mcp`
 
 [English](README.md) | [中文](README_CN.md)
 
@@ -26,7 +26,7 @@
 ## 🚀 安装与运行
 
 ```bash
-npx -y @torchv/ais-mcp
+npx -y @torchv-team/ais-mcp
 ```
 
 ---
@@ -142,7 +142,7 @@ npm run start:http
   "mcpServers": {
     "ais": {
       "command": "npx",
-      "args": ["-y", "@torchv/ais-mcp"],
+      "args": ["-y", "@torchv-team/ais-mcp"],
       "env": {
         "KB_EXECUTE_URL": "https://https://bot.torchv.com",
         "KB_TOKEN": "your-token",

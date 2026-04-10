@@ -1,4 +1,4 @@
-# `@torchv/ais-mcp`
+# `@torchv-team/ais-mcp`
 
 [English](README.md) | [中文](README_CN.md)
 
@@ -24,7 +24,7 @@ A production-ready MCP server that enables **read / write / edit / file transfer
 ## 🚀 Installation & Run
 
 ```bash
-npx -y @torchv/ais-mcp
+npx -y @torchv-team/ais-mcp
 ```
 
 ---
@@ -146,7 +146,7 @@ npm run start:http
   "mcpServers": {
     "ais": {
       "command": "npx",
-      "args": ["-y", "@torchv/ais-mcp"],
+      "args": ["-y", "@torchv-team/ais-mcp"],
       "env": {
         "KB_EXECUTE_URL": "https://your-ais-domain",
         "KB_TOKEN": "your-token",
