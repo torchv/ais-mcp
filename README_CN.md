@@ -9,7 +9,7 @@
 
 提供 **读 / 写 / 修改 / 文件传输** 四类工具，直接操作 AIS 企业知识库。
 
-![img.png](resource/img.png)
+![img](resource/img.png)![img.png](https://torchvai.oss-cn-hangzhou.aliyuncs.com/cdn_v1/static/officialwebsite/img.png)
 
 ---
 
@@ -221,4 +221,4 @@ TorchV 的核心产品是 **AIS（AI 知识引擎）**。
 
 📲 扫码联系（CEO微信）：
 
-![img.png](resource/wechat.png)
+![img.png](https://torchvai.oss-cn-hangzhou.aliyuncs.com/cdn_v1/static/officialwebsite/wechat.png)

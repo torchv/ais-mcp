@@ -8,7 +8,7 @@
 
 A production-ready MCP server that enables **read / write / edit / file transfer** operations directly on the AIS enterprise knowledge base.
 
-![img](resource/img.png)
+![img.png](https://torchvai.oss-cn-hangzhou.aliyuncs.com/cdn_v1/static/officialwebsite/img.png)
 ---
 
 ## ✨ Features
@@ -227,4 +227,4 @@ AIS is TorchV’s core product — not just a traditional knowledge base, but:
 
 📲 Contact us (CEO WeChat):
 
-![img.png](resource/wechat.png)
+![img.png](https://torchvai.oss-cn-hangzhou.aliyuncs.com/cdn_v1/static/officialwebsite/wechat.png)
